@@ -144,9 +144,8 @@ function provider(this: any, options: ProviderOptions) {
     }
   }
 
-
-
   function makeUtils(utilopts: ProviderUtilityOptions, config?: any) {
+
     function makeUrl(suffix: string, q: any) {
       let url = utilopts.url + suffix
       if (q) {
@@ -160,10 +159,10 @@ function provider(this: any, options: ProviderOptions) {
               .toString()
         }
       }
-
+  
       return url
     }
-
+  
     function makeConfig(seneca: any) {
       seneca.util.deep(
         {
@@ -174,10 +173,10 @@ function provider(this: any, options: ProviderOptions) {
         config
       )
     }
-
+  
     async function getJSON(url: string) {
       const res = await utilopts.fetch(url, config)
-
+  
       if (200 == res.status) {
         const json: any = await res.json()
         return json
@@ -187,7 +186,7 @@ function provider(this: any, options: ProviderOptions) {
         throw fullError
       }
     }
-
+  
     async function postJSON(url: string) {
       const postConfig = {
         method: config.method || "post",
@@ -197,9 +196,9 @@ function provider(this: any, options: ProviderOptions) {
           ...config.headers,
         },
       }
-
+  
       const res = await utilopts.fetch(url, postConfig)
-
+  
       if (200 <= res.status && res.status < 300) {
         const json: any = await res.json()
         return json
@@ -214,7 +213,7 @@ function provider(this: any, options: ProviderOptions) {
         throw fullError
       }
     }
-
+  
     async function deleteJSON(url: string) {
       const deleteConfig = {
         method: config.method || "delete",
@@ -223,9 +222,9 @@ function provider(this: any, options: ProviderOptions) {
           ...config.headers,
         },
       }
-
+  
       const res = await utilopts.fetch(url, deleteConfig)
-
+  
       if (200 <= res.status && res.status < 300) {
         const json: any = await res.json()
         return json
@@ -240,24 +239,28 @@ function provider(this: any, options: ProviderOptions) {
         throw fullError
       }
     }
-
+  
     return {
-      makeUrl,
-      makeConfig,
-      getJSON,
-      postJSON,
-      deleteJSON,
+      exports: {
+        makeUrl,
+        makeConfig,
+        getJSON,
+        postJSON,
+        deleteJSON,
+      }
     }
   }
 
   return {
     exports: {
       entityBuilder,
-      makeUtils
+      makeUtils,
     }
   }
 
 }
+
+
 
 
 // For external testing
@@ -345,7 +348,6 @@ const defaults: ProviderOptions = {
 }
 
 Object.assign(provider, { defaults })
-
 
 export default provider
 
